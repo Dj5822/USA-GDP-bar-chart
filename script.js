@@ -21,7 +21,12 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                         .domain([0, d3.max(dataset, d => d[1])])
                         .range([height-botPadding, topPadding]);
 
-        const xAxis = d3.axisBottom(xScale);
+        const xAxis = d3.axisBottom(
+            d3.scaleLinear()
+                .domain([parseInt(dataset[0][0].split("-")[0]),
+                 parseInt(dataset[dataset.length-1][0].split("-")[0])])
+                .range([leftPadding, width - rightPadding])
+        ).tickFormat(x => "" + x);
         const yAxis = d3.axisLeft(yScale);
 
         const svg = d3.select('body').append('svg')
@@ -42,18 +47,13 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         
         svg.append('g').attr("id", "x-axis")
                         .attr("transform", "translate(0," + (height - botPadding) + ")")
-                        .call(d3.axisBottom(
-                            d3.scaleLinear()
-                                .domain([parseInt(dataset[0][0].split("-")[0]),
-                                 parseInt(dataset[dataset.length-1][0].split("-")[0])])
-                                .range([leftPadding, width - rightPadding])
-                        ));
+                        .call(xAxis);
         
         svg.append('g').attr("id", "y-axis")
                         .attr("transform", "translate(" + leftPadding + ", 0)")
                         .call(yAxis);
 
-        d3.select('body').append('h1').text("USA GDP");
+        d3.select('body').append('h1').text("USA GDP").attr("id", "title");
         
         d3.select('body').append('p').text(JSON.stringify(data));
     });
