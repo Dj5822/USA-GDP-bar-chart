@@ -1,5 +1,7 @@
-const xPadding = 60;
-const yPadding = 30;
+const leftPadding = 60;
+const rightPadding = 20;
+const topPadding = 10;
+const botPadding = 30;
 
 const width = 1860;
 const height = 820;
@@ -12,12 +14,12 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         // bar horizontal distribution scale.
         const xScale = d3.scaleLinear()
                         .domain([0, dataset.length])
-                        .range([xPadding, width]);
+                        .range([leftPadding, width - rightPadding]);
 
         // bar height scale.
         const yScale = d3.scaleLinear()
                         .domain([0, d3.max(dataset, d => d[1])])
-                        .range([height-yPadding, 0]);
+                        .range([height-botPadding, topPadding]);
 
         const xAxis = d3.axisBottom(xScale);
         const yAxis = d3.axisLeft(yScale);
@@ -29,7 +31,7 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         svg.selectAll('rect').data(dataset).enter().append('rect')
             .attr("width", 5)
             .attr("height", (d, i) => {
-                return height-yPadding-yScale(d[1]);
+                return height-botPadding-yScale(d[1]);
             })
             .attr("x", (d, i) => {
                 return xScale(i);
@@ -39,11 +41,16 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             }).style("fill", "blue");
         
         svg.append('g').attr("id", "x-axis")
-                        .attr("transform", "translate(0," + (height - yPadding) + ")")
-                        .call(xAxis);
+                        .attr("transform", "translate(0," + (height - botPadding) + ")")
+                        .call(d3.axisBottom(
+                            d3.scaleLinear()
+                                .domain([parseInt(dataset[0][0].split("-")[0]),
+                                 parseInt(dataset[dataset.length-1][0].split("-")[0])])
+                                .range([leftPadding, width - rightPadding])
+                        ));
         
         svg.append('g').attr("id", "y-axis")
-                        .attr("transform", "translate(" + xPadding + ", 0)")
+                        .attr("transform", "translate(" + leftPadding + ", 0)")
                         .call(yAxis);
 
         d3.select('body').append('h1').text("USA GDP");
