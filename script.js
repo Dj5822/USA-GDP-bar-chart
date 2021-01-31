@@ -35,7 +35,8 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                             .attr("id", "tooltip")
                             .style("width", "150px")
                             .style("height", "50px")
-                            .style("opacity", 0);
+                            .style("opacity", 0)
+                            .attr("data-date", "");
         
         var dateText = tooltip.append("label").attr("id", "data-date");
         var gdpText = tooltip.append("label");
@@ -56,14 +57,15 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .attr("data-date", (d, i) => d[0])
             .attr("data-gdp", (d, i) => d[1])
             .on('mouseover', (d, i) => {
+                tooltip.attr("data-date", d[0]);
                 dateText.text(d[0]);
                 gdpText.text(`$${d[1]} billion`);
                 tooltip.transition().duration(200).style("opacity", 0.9);
                 if (i > dataset.length/2) {
-                    tooltip.style("left", `${xScale(i) - 150}px`);
+                    tooltip.style("left", `${xScale(new Date(Date.parse(d[0]))) - 150}px`);
                 }
                 else {
-                    tooltip.style("left", `${xScale(i)}px`);
+                    tooltip.style("left", `${xScale(new Date(Date.parse(d[0])))}px`);
                 }
                 if (yScale(d[1]) < height / 2) {
                     tooltip.style("top", `${yScale(d[1]) + 50}px`);
