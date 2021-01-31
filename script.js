@@ -24,11 +24,11 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
                         .range([height-botPadding, topPadding]);
 
         const xAxis = d3.axisBottom(
-            d3.scaleLinear()
-                .domain([parseInt(dataset[0][0].split("-")[0]),
-                 parseInt(dataset[dataset.length-1][0].split("-")[0])])
+            d3.scaleTime()
+                .domain([new Date(Date.parse(dataset[0][0])),
+                new Date(Date.parse(dataset[dataset.length-1][0]))])
                 .range([leftPadding, width - rightPadding])
-        ).tickFormat(x => "" + x);
+        );
         const yAxis = d3.axisLeft(yScale);
 
         const svg = d3.select('body').append('svg')
