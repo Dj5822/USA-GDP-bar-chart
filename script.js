@@ -32,14 +32,14 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         const svg = d3.select('body').append('svg')
                         .attr("width", width).attr("height", height)
                         .style("background-color", "#DDDDDD");
-        
+
         var tooltip = d3.select('body').append('div')
                             .attr("id", "tooltip")
                             .style("width", "150px")
                             .style("height", "50px")
-                            .style("opacity", 0);
+                            .style("opacity", 0);;
         
-        var dateText = tooltip.attr("id", "data-date").append("label");
+        var dateText = tooltip.append("label").attr("id", "data-date");
         var gdpText = tooltip.append("label");
 
         svg.selectAll('rect').data(dataset).enter().append('rect')
@@ -60,7 +60,19 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             .on('mouseover', (d, i) => {
                 dateText.text(d[0]);
                 gdpText.text(`$${d[1]} billion`);
-                tooltip.style("opacity", 1);
+                tooltip.style("opacity", 0.9);
+                if (i > dataset.length/2) {
+                    tooltip.style("left", `${xScale(i)-150}px`);
+                }
+                else {
+                    tooltip.style("left", `${xScale(i)}px`);
+                }
+                if (yScale(d[1]) < height / 2) {
+                    tooltip.style("top", `${yScale(d[1]) + 50}px`);
+                }
+                else {
+                    tooltip.style("top", `${yScale(d[1]) - 50}px`);
+                }
             });
         
         svg.append('g').attr("id", "x-axis")
