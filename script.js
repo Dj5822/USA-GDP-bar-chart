@@ -32,8 +32,18 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
         const svg = d3.select('body').append('svg')
                         .attr("width", width).attr("height", height)
                         .style("background-color", "#DDDDDD");
+        
+        var tooltip = d3.select('body').append('div')
+                            .attr("id", "tooltip")
+                            .style("width", "150px")
+                            .style("height", "50px")
+                            .style("opacity", 0);
+        
+        var dateText = tooltip.attr("id", "data-date").append("label");
+        var gdpText = tooltip.append("label");
 
         svg.selectAll('rect').data(dataset).enter().append('rect')
+            .attr("class", "bar")
             .attr("width", 5)
             .attr("height", (d, i) => {
                 return height-botPadding-yScale(d[1]);
@@ -43,7 +53,15 @@ fetch('https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/maste
             })
             .attr("y", (d, i) => {
                 return yScale(d[1]);
-            }).style("fill", "blue");
+            })
+            .style("fill", "blue")
+            .attr("data-date", (d, i) => d[0])
+            .attr("data-gdp", (d, i) => d[1])
+            .on('mouseover', (d, i) => {
+                dateText.text(d[0]);
+                gdpText.text(`$${d[1]} billion`);
+                tooltip.style("opacity", 1);
+            });
         
         svg.append('g').attr("id", "x-axis")
                         .attr("transform", "translate(0," + (height - botPadding) + ")")
